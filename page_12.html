@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Comic Kingdom</title>
+<style>
+body {
+  margin:0;
+  font-family:'Courier New', monospace;
+  background:#111;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
+  text-align:center;
+}
+h1 {
+  color:#ffcc00;
+  cursor:pointer;
+}
+p {color:#7a7a7a;}
+input {
+  padding:10px;
+  font-size:18px;
+  border-radius:6px;
+  border:1px solid #555;
+  background:#222;
+  color:#fff;
+  margin-top:12px;
+}
+button {
+  padding:10px 15px;
+  margin-left:8px;
+  font-size:16px;
+  border-radius:6px;
+  border:1px solid #555;
+  background:#333;
+  color:#fff;
+  cursor:pointer;
+}
+button:hover {background:#444;color:#ffcc00;}
+#message {margin-top:10px;color:#ff6666;}
+code {background:#222;padding:4px 6px;border-radius:4px;color:#70ffb0;}
+small {color:#7a7a7a;}
+span.rot13-hint {color:#ffcc00; font-weight:bold;}
+#decoder {
+  display:none;
+  margin-top:12px;
+  background:#222;
+  padding:10px;
+  border-radius:6px;
+  border:1px solid #555;
+}
+#decoder input {
+  padding:6px;
+  font-size:16px;
+  background:#111;
+  color:#fff;
+  border:1px solid #555;
+  border-radius:4px;
+}
+#decoder button {padding:6px 10px; margin-left:4px;}
+#decoder p {color:#70ffb0; margin-top:6px;}
+</style>
+</head>
+<body>
+<h1 id="rot13-header">ROT13 Cipher Challenge</h1>
+<p>Decode the secret word:</p>
+<p><code>"frperg"</code> <br><small>Hint: Use <span class="rot13-hint">ROT13</span>- then it will click.</small></p>
+
+<div>
+<input type="text" id="answer" placeholder="Decoded word">
+<button onclick="checkAnswer()">Submit</button>
+</div>
+<div id="message"></div>
+
+<!-- ROT13 decoder popup -->
+<div id="decoder">
+  <p>Quick ROT13 Decoder:</p>
+  <input type="text" id="decode-input" placeholder="Enter text">
+  <button onclick="decodeROT13()">Decode</button>
+  <p id="decode-output"></p>
+</div>
+
+<script>
+// Answer check
+function checkAnswer(){
+  const input = document.getElementById('answer').value.trim().toLowerCase();
+  if(input === 'secret'){ // ROT13('frperg') = 'secret'
+    document.getElementById('message').style.color='#a8ffb0';
+    document.getElementById('message').textContent='Correct! Proceeding to the next page...';
+    setTimeout(()=>{ window.location.href='page_13.html'; }, 800);
+  } else {
+    document.getElementById('message').style.color='#ff6666';
+    document.getElementById('message').textContent='Incorrect. Try again.';
+  }
+}
+
+// Toggle decoder visibility
+document.getElementById('rot13-header').addEventListener('click', () => {
+  const decoder = document.getElementById('decoder');
+  decoder.style.display = decoder.style.display === 'none' ? 'block' : 'none';
+});
+
+// ROT13 decode function
+function decodeROT13(){
+  const text = document.getElementById('decode-input').value;
+  const decoded = text.replace(/[a-zA-Z]/g, c => {
+    const base = c <= "Z" ? 65 : 97;
+    return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+  });
+  document.getElementById('decode-output').textContent = decoded;
+}
+  // Add a new history state when the page loads
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    // This runs if the user presses back/forward
+    history.go(1); // Move forward again
+  };
+</script>
+</body>
+</html>

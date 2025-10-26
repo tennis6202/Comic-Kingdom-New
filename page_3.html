@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comic Kingdom</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #111;
+      color: #ff4444;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 50px;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px #000;
+      display: inline-block;
+    }
+
+    p {
+      font-size: 20px;
+    }
+
+    span {
+      color: #ff4444;
+      font-weight: bold;
+      display: inline-block;
+      transition: color 0.2s;
+    }
+
+  </style>
+</head>
+<body>
+  <div>
+    <h1>
+      <span onclick="clickClue('4')">4</span><span onclick="clickClue('0')">0</span><span onclick="clickClue('4')">4</span>: 
+      <span onclick="clickClue('C')">C</span><span onclick="clickClue('o')">o</span><span onclick="clickClue('m')">m</span><span onclick="clickClue('i')">i</span><span onclick="clickClue('c')">c</span> 
+      <span onclick="clickClue('K')">K</span><span onclick="clickClue('i')">i</span><span onclick="clickClue('n')">n</span><span onclick="clickClue('g')">g</span><span onclick="clickClue('d')">d</span><span onclick="clickClue('o')">o</span><span onclick="clickClue('m')">m</span> 
+      <span onclick="clickClue('H')">H</span><span onclick="clickClue('a')">a</span><span onclick="clickClue('s')">s</span> 
+      <span onclick="clickClue('C')">C</span><span onclick="clickClue('r')">r</span><span onclick="clickClue('a')">a</span><span onclick="clickClue('s')">s</span><span onclick="clickClue('h')">h</span><span onclick="clickClue('e')">e</span><span onclick="clickClue('d')">d</span>
+    </h1>
+    <p>Something went wrong. 0rs  EMBEDDED-ORDER ERROR</p>
+  </div>
+
+  <script>
+    const code = ['0','r','s']; // secret clickable sequence
+    let progress = 0;
+
+    function clickClue(letter) {
+      if(letter === code[progress]){
+        progress++;
+        if(progress === code.length){
+          window.location.href = "page_4.html"; // unlock next page
+        }
+      } else {
+        progress = 0; // reset progress on wrong click
+      }
+    }
+      // Add a new history state when the page loads
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    // This runs if the user presses back/forward
+    history.go(1); // Move forward again
+  };
+  </script>
+</body>
+</html>

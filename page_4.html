@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Comic Kingdom</title>
+  <style>
+    :root{
+      --bg:#070707;
+      --panel:#0f0f0f;
+      --text:#a8ffa8;
+      --muted:#7a7a7a;
+      --accent:#70ffb0;
+    }
+    html,body{height:100%;margin:0;}
+    body{
+      background: radial-gradient(ellipse at top, #0b0b0b 0%, #070707 60%), var(--bg);
+      font-family: "Source Code Pro", "Courier New", monospace;
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .terminal {
+      width: 900px;
+      max-width:95%;
+      height: 560px;
+      background: linear-gradient(180deg,#0a0a0a 0%, #0e0e0e 100%);
+      border-radius:8px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+      padding:18px;
+      box-sizing: border-box;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .term-header{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .lights {display:flex; gap:6px;}
+    .light{width:11px;height:11px;border-radius:50%;}
+    .l-red{background:#ff5f56}; .l-yellow{background:#ffbd2e}; .l-green{background:#27c93f};
+    .screen {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:6px;
+      padding:14px;
+      flex:1;
+      overflow:auto;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      font-size:16px;
+      line-height:1.45;
+    }
+    .screen .line{white-space:pre-wrap; word-break: break-word;}
+    .prompt-line{display:flex; gap:8px; align-items:flex-start;}
+    .prompt {
+      color:var(--accent);
+      min-width:110px;
+      font-weight:600;
+    }
+    .input {
+      flex:1;
+      outline:none;
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-family:inherit;
+      font-size:inherit;
+    }
+    .muted{color:var(--muted);}
+    .success{color:#a8ffd1;}
+    .error{color:#ff9a9a;}
+    .kbd{display:inline-block;background:#0a0a0a;border:1px solid rgba(255,255,255,0.02);padding:2px 6px;border-radius:4px;color:var(--muted);font-size:14px}
+    .hint{color:#8fb; font-size:14px; margin-top:8px;}
+    /* small responsive */
+    @media(max-width:600px){
+      .prompt{min-width:80px;font-size:14px}
+      .terminal{height:70vh;padding:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal" role="application" aria-label="Comic Kingdom terminal">
+    <div class="term-header">
+      <div class="lights">
+        <div class="light l-red"></div>
+        <div class="light l-yellow"></div>
+        <div class="light l-green"></div>
+      </div>
+      <div class="muted">Comic Kingdom — Secure Node</div>
+    </div>
+
+    <div id="screen" class="screen" tabindex="0" aria-live="polite" role="log">
+      <div class="line muted">Initializing secure node...</div>
+      <div class="line muted">Security: <span class="muted">ENCRYPTED</span></div>
+      <div class="line muted">Type <span class="kbd">help</span> for available commands.</div>
+      <div class="line">&nbsp;</div>
+    </div>
+
+    <div class="prompt-line" aria-hidden="false">
+      <div class="prompt">guest@comickingdom:~$</div>
+      <input id="cmd" class="input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" />
+    </div>
+  </div>
+
+<script>
+(() => {
+  const screen = document.getElementById('screen');
+  const input = document.getElementById('cmd');
+  input.focus();
+
+  // Fake filesystem
+  const files = {
+    'readme.txt': 'Welcome, intruder. If you are reading this, you are curious. Curiosity is a key — but keys here are encoded.\n',
+    'clue.txt': 'Only the jbegul shall enter.\n',
+    'notes.log': 'Access attempts: 0x14f9\nIf you find this, you are close.\n',
+  };
+
+  // helper: write to screen
+  function writeLine(text, cls){
+    const div = document.createElement('div');
+    div.className = 'line' + (cls ? ' ' + cls : '');
+    div.textContent = text;
+    screen.appendChild(div);
+    screen.scrollTop = screen.scrollHeight;
+  }
+
+  // small typing effect for welcome lines
+  function typeIntro(lines, i=0){
+    if(i>=lines.length) return;
+    const el = document.createElement('div'); el.className='line';
+    screen.appendChild(el);
+    let pos=0;
+    const text = lines[i];
+    const t = setInterval(()=>{
+      el.textContent = text.slice(0,pos+1);
+      pos++;
+      screen.scrollTop = screen.scrollHeight;
+      if(pos>=text.length){ clearInterval(t); typeIntro(lines, i+1); }
+    }, 8);
+  }
+
+  // initial typed intro
+  typeIntro([
+    '…secure node online.',
+    'node id: CK-4-ERROR-TEST',
+    'Authenticated: GUEST (limited)'
+  ]);
+
+  function rot13(str){
+    return str.replace(/[a-zA-Z]/g, c => {
+      const base = c <= "Z" ? 65 : 97;
+      return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+    });
+  }
+
+  // command handlers
+  const commands = {
+    help(args){
+      writeLine('Available commands:', 'muted');
+      writeLine('  help                 show this message', 'muted');
+      writeLine('  ls                   list files', 'muted');
+      writeLine('  cat <file>           show file contents', 'muted');
+      writeLine('  rot13 <text>         decode/encode ROT13', 'muted');
+      writeLine('  unlock <word>        attempt to unlock the next node', 'muted');
+      writeLine('  clear                clear the screen', 'muted');
+    },
+    ls(args){
+      const names = Object.keys(files).join('  ');
+      writeLine(names || '(no files)');
+    },
+    cat(args){
+      if(!args[0]) return writeLine('cat: missing file operand', 'error');
+      const name = args.join(' ');
+      if(files[name]) writeLine(files[name]);
+      else writeLine(`cat: ${name}: No such file`, 'error');
+    },
+    rot13(args){
+      if(!args.length) return writeLine('rot13: missing text', 'error');
+      const text = args.join(' ');
+      writeLine(rot13(text));
+    },
+    unlock(args){
+      if(!args[0]) return writeLine('unlock: missing passphrase', 'error');
+      const attempt = args.join(' ').trim().toLowerCase();
+      // correct passphrase = worthy (decoded from clue.txt's jbegul via rot13)
+      if(attempt === 'worthy'){
+        writeLine('Passphrase accepted. Establishing secure channel...', 'success');
+        setTimeout(()=> {
+          writeLine('Channel established. Redirecting to next node...', 'success');
+          setTimeout(()=> { window.location.href = 'page_5.html'; }, 700);
+        }, 800);
+      } else {
+        writeLine('Passphrase rejected. Access denied.', 'error');
+      }
+    },
+    clear(){
+      screen.innerHTML = '';
+    }
+  };
+
+  // parse and execute
+  function runCommand(raw){
+    if(!raw.trim()) return;
+    writeLine('guest@comickingdom:~$ ' + raw, 'muted');
+    const parts = raw.trim().split(/\s+/);
+    const cmd = parts.shift().toLowerCase();
+    if(commands[cmd]){
+      try { commands[cmd](parts); }
+      catch(e){ writeLine('Error executing command', 'error'); }
+    } else {
+      writeLine(`${cmd}: command not found. Try 'help'`, 'error');
+    }
+  }
+
+  // handle enter
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){
+      const val = input.value;
+      input.value='';
+      runCommand(val);
+    } else if(e.key === 'l' && (e.ctrlKey || e.metaKey)){
+      // ctrl/cmd+L clear quick
+      e.preventDefault();
+      commands.clear();
+    }
+  });
+
+  // allow focusing container to type
+  document.addEventListener('click', ()=> input.focus());
+
+  // expose something to devtools (fun)
+  window.CK = { files, rot13 };
+
+})();
+  // Add a new history state when the page loads
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    // This runs if the user presses back/forward
+    history.go(1); // Move forward again
+  };
+</script>
+</body>
+</html>

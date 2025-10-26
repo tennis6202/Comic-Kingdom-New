@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Comic Kingdom</title>
+<style>
+  :root{
+    --bg: #f6f7f9;
+    --accent: #ffcc00;
+    --brand: #111;
+    --muted: #6b7280;
+    --card: #ffffff;
+    --glass: rgba(255,255,255,0.6);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: Inter, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--brand);
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* Header / nav */
+  header.site-header{
+    background: linear-gradient(90deg,#111 0%, #222 100%);
+    color: #fff;
+    padding: 18px 28px;
+    position: sticky;
+    top:0;
+    z-index:50;
+    box-shadow:0 2px 8px rgba(0,0,0,0.12);
+  }
+  .topbar{display:flex;align-items:center;gap:20px;max-width:1200px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px;}
+  .logo .crest{width:38px;height:38px;border-radius:6px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#111;font-weight:800;}
+  nav.primary{margin-left:16px;flex:1;}
+  nav.primary ul{display:flex;gap:12px;list-style:none;margin:0;padding:0;align-items:center;}
+  nav.primary a{color:#fff;text-decoration:none;padding:8px 10px;border-radius:6px;font-size:15px;}
+  nav.primary a:hover{background:rgba(255,255,255,0.06);}
+  .header-actions{display:flex;gap:10px;align-items:center;}
+  .search-input{background:#fff;border-radius:8px;padding:6px 10px;border:none;width:220px;}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.12);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer;}
+  .cta{background:var(--accent);color:#111;padding:8px 12px;border-radius:8px;font-weight:700;cursor:pointer;border:none;}
+
+  /* Hero */
+  .hero{
+    max-width:1200px;margin:28px auto;padding:36px;background:linear-gradient(180deg,#fff,#fbfbfd);border-radius:12px;display:flex;gap:24px;align-items:center;
+    box-shadow:0 8px 30px rgba(16,24,40,0.06);
+  }
+  .hero-left{flex:1;}
+  .hero h1{margin:0;font-size:34px;color:var(--brand);line-height:1.05;}
+  .hero p{color:var(--muted);margin:12px 0 18px;}
+  .hero .buttons{display:flex;gap:10px;}
+  .hero .btn-large{padding:12px 18px;border-radius:10px;border:none;cursor:pointer;font-weight:700;}
+  .btn-explore{background:var(--brand);color:#fff;}
+  .btn-archives{background:#fff;border:1px solid #e6e6e9;color:var(--brand);}
+  .hero-right{width:420px;display:flex;flex-direction:column;gap:12px;}
+  .featured-card{background:linear-gradient(180deg,#fff,#fff);padding:14px;border-radius:10px;border:1px solid #eee;display:flex;gap:12px;align-items:center;}
+  .thumb{width:84px;height:110px;border-radius:6px;background:linear-gradient(180deg,#ffd36b,#ff9f00);display:flex;align-items:center;justify-content:center;color:#111;font-weight:800;font-size:20px;}
+  .meta{flex:1;}
+  .meta h3{margin:0;font-size:16px;}
+  .meta p{margin:6px 0 0;color:var(--muted);font-size:13px;}
+
+  /* Featured grid */
+  .container{max-width:1200px;margin:28px auto;padding:0 18px;}
+  .section-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .section-title h2{margin:0;font-size:20px;}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .comic-card{background:var(--card);border-radius:10px;padding:12px;border:1px solid #eee;box-shadow:0 6px 20px rgba(16,24,40,0.04);cursor:pointer;display:flex;flex-direction:column;}
+  .comic-thumb{height:160px;border-radius:8px;background:linear-gradient(180deg,#ffd36b,#ff9f00);display:flex;align-items:center;justify-content:center;font-weight:800;color:#111;font-size:28px;}
+  .comic-title{margin:10px 0 0;font-weight:700;}
+  .comic-meta{color:var(--muted);font-size:13px;margin-top:6px;}
+
+  /* Carousel */
+  .carousel{margin-top:18px;position:relative;overflow:hidden;border-radius:10px;background:linear-gradient(90deg,#111,#1a1a1a);color:#fff;}
+  .carousel-track{display:flex;gap:12px;transition:transform 0.45s ease;}
+  .carousel-item{min-width:260px;padding:18px;display:flex;gap:12px;align-items:center;}
+  .carousel-item img{width:100px;height:140px;object-fit:cover;border-radius:6px;}
+  .carousel .dot-row{position:absolute;right:12px;bottom:12px;display:flex;gap:6px;}
+  .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);}
+  .dot.active{background:var(--accent);}
+
+  /* Newsletter */
+  .newsletter{background:#111;color:#fff;padding:20px;border-radius:10px;margin:28px 0;display:flex;gap:12px;align-items:center;}
+  .newsletter input{padding:10px;border-radius:8px;border:none;}
+
+  /* Footer */
+  footer.site-footer{background:#0f1724;color:#c6cbd6;padding:36px 18px;}
+  .footer-inner{max-width:1200px;margin:0 auto;display:flex;gap:24px;flex-wrap:wrap;}
+  .footer-col{flex:1;min-width:180px;}
+  .footer-col h5{color:#fff;margin-top:0;}
+  .footer-links{display:flex;flex-direction:column;gap:6px;}
+  .footer-links a{color:#c6cbd6;text-decoration:none;font-size:14px;}
+  .footer-links a:hover{text-decoration:underline;color:var(--accent);}
+  .legal{width:100%;border-top:1px solid rgba(255,255,255,0.04);margin-top:18px;padding-top:18px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:13px;color:#9aa0ae;}
+  .legal a{color:#9aa0ae;text-decoration:none;}
+  .legal a:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="site-header">
+  <div class="topbar">
+    <div class="logo"><div class="crest">CK</div>Comic Kingdom</div>
+    <nav class="primary">
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Browse</a></li>
+        <li><a href="#">New Releases</a></li>
+        <li><a href="#">Characters</a></li>
+        <li><a href="#">Series</a></li>
+        <li><a href="#">Shop</a></li>
+        <li><a href="#">Community</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <input class="search-input" id="searchField" placeholder="Search comics (for show)">
+      <button class="ghost" id="btn-search">Search</button>
+      <button class="cta">Sign In</button>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <h1>Discover the Kingdom of Comics</h1>
+    <p>Exclusive issues, fan art, curated collections — all handpicked for the most adventurous readers. (This homepage is for show — nothing here is actually purchasable.)</p>
+    <div class="buttons">
+      <button class="btn-large btn-explore" onclick="fakeAction('Explore Collections')">Explore Collections</button>
+      <button class="btn-large btn-archives" onclick="fakeAction('View Archives')">View Archives</button>
+    </div>
+
+    <div style="margin-top:18px" class="features">
+      <div class="feature">
+        <h4>Featured Universe</h4>
+        <p class="muted">New crossovers and exclusive one-shots from top creators.</p>
+      </div>
+      <div class="feature">
+        <h4>Fan Corner</h4>
+        <p class="muted">Submit fan art, vote on next covers, and join events.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="featured-card">
+      <div class="thumb">01</div>
+      <div class="meta">
+        <h3>Kingdom Rising #1</h3>
+        <p>Issue spotlight: a new beginning for the Crowned Heroes.</p>
+      </div>
+    </div>
+    <div class="featured-card" style="margin-top:10px">
+      <div class="thumb" style="background:linear-gradient(180deg,#9be15d,#00e3a3)">02</div>
+      <div class="meta">
+        <h3>Midnight Mischief</h3>
+        <p>A dark comedy miniseries loved by (fictional) critics.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Carousel -->
+<section class="container">
+  <div class="section-title">
+    <h2>Spotlight</h2>
+    <div style="color:var(--muted)">Curated picks</div>
+  </div>
+  <div class="carousel" id="carousel">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-item">
+        <img src="images/tales.jpg" alt="Tales of the Outlands">
+        <div>
+          <h3>Tales of the Outlands</h3>
+          <p>An anthology of rogue adventurers.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="images/neon.jpg" alt="Neon Knights">
+        <div>
+          <h3>Neon Knights</h3>
+          <p>A cyberpunk saga with heart.</p>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="images/moonlight.jpg" alt="Moonlight Monologues">
+        <div>
+          <h3>Moonlight Monologues</h3>
+          <p>Poetic one-shots from the kingdom's poets.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured grid -->
+<div class="container">
+  <div class="section-title">
+    <h2>Featured Series</h2>
+    <div style="color:var(--muted)">Trending now</div>
+  </div>
+  <div class="grid">
+    <div class="comic-card" onclick="fakeAction('Open: Vanguard #3')">
+      <div class="comic-thumb">V3</div>
+      <div class="comic-title">Vanguard #3</div>
+      <div class="comic-meta">Action • 42 pages</div>
+    </div>
+    <div class="comic-card" onclick="fakeAction('Open: Scribbles & Spells')">
+      <div class="comic-thumb">S</div>
+      <div class="comic-title">Scribbles & Spells</div>
+      <div class="comic-meta">Fantasy • Ongoing</div>
+    </div>
+    <div class="comic-card" onclick="fakeAction('Open: Retro Rumble')">
+      <div class="comic-thumb">R</div>
+      <div class="comic-title">Retro Rumble</div>
+      <div class="comic-meta">Classic • Remastered</div>
+    </div>
+    <div class="comic-card" onclick="fakeAction('Open: The Quiet Watcher')">
+      <div class="comic-thumb">QW</div>
+      <div class="comic-title">The Quiet Watcher</div>
+      <div class="comic-meta">Mystery • Limited</div>
+    </div>
+  </div>
+</div>
+
+<!-- Newsletter -->
+<div class="newsletter">
+  <div style="flex:1">
+    <div style="font-weight:700">Join our newsletter</div>
+    <div style="color:var(--muted);font-size:13px">Fake updates, mock exclusives — all for show.</div>
+  </div>
+  <div style="display:flex;gap:8px">
+    <input placeholder="Your email (not real)" aria-label="Email for newsletter">
+    <button class="cta" onclick="fakeAction('Subscribe')">Subscribe</button>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <h5>Discover</h5>
+      <div class="footer-links">
+        <a href="#">Browse All</a>
+        <a href="#">New Releases</a>
+        <a href="#">Top Rated</a>
+        <a href="#">Staff Picks</a>
+        <a href="#">Collections</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Community</h5>
+      <div class="footer-links">
+        <a href="#">Forums</a>
+        <a href="#">Events</a>
+        <a href="#">Creator Hub</a>
+        <a href="#">Fan Art</a>
+        <a href="#">Contests</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <div class="footer-links">
+        <a href="#">About Us</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+        <a href="#">Investor Relations</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Help & Legal</h5>
+      <div class="footer-links">
+        <a href="#">Help Center</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookies</a>
+        <a href="#">Safety</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>More</h5>
+      <div class="footer-links">
+        <a href="#">Advertising</a>
+        <a href="#">Affiliates</a>
+        <a href="#">Sponsorships</a>
+        <a href="#">Merchandise</a>
+        <a href="#">Gift Cards</a>
+        <a href="#">Sitemap</a>
+        <a href="#">API</a>
+        <a href="#">Brand Guidelines</a>
+        <a href="#">Accessibility</a>
+        <a href="#">Press Kit</a>
+        <a href="#">Security</a>
+      </div>
+    </div>
+
+<!-- Legal / Real Site -->
+<div style="flex-basis:100%"></div>
+<div class="legal">
+  <span>© 2025 Comic Kingdom</span>
+  <a href="#">Privacy Policy</a>
+  <button style="background:transparent;border:none;color:#9aa0ae;text-decoration:underline;cursor:pointer;font-size:13px;padding:0;margin-left:8px;"
+          onclick="window.location.href='page_14.html'">
+    Real Site
+  </button>
+     <a href="#">Terms of Service</a>
+     <a href="#">Cookie Settings</a>
+     <a href="#">Sitemap</a>
+     <a href="#">Advertise</a>
+     <a href="#">Developers</a>
+     <a href="#">Partnerships</a>
+     <a href="#">Press Contact</a>
+     <a href="#">Report Abuse</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Fake interactions
+function fakeAction(name){
+  alert(name + " — this is a demo UI (no real content).");
+}
+
+// Search fake
+document.getElementById('btn-search').addEventListener('click', () => {
+  const q = document.getElementById('searchField').value.trim();
+  if(!q) { alert('Try searching for "kingdom". (This search is for show.)'); return; }
+  alert('Search results for "' + q + '" — (static demo). Explore the footer for hidden links.');
+});
+
+// Real Site button
+document.getElementById('btn-real-site').addEventListener('click', () => {
+  window.location.href = 'page_15.html';
+});
+
+// Carousel auto-scroll
+(function(){
+  const track = document.getElementById('carouselTrack');
+  const items = track.children;
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % items.length;
+    track.style.transform = 'translateX(' + (- (items[0].offsetWidth + 12) * index) + 'px)';
+  }, 3500);
+})();
+  // Add a new history state when the page loads
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    // This runs if the user presses back/forward
+    history.go(1); // Move forward again
+  };
+</script>
+</body>
+</html>
