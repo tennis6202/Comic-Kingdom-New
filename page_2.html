@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comic Kingdom</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f5f5f5;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .email-box {
+      background-color: #2a2a2a;
+      border: 1px solid #555;
+      padding: 20px 30px;
+      border-radius: 10px;
+      width: 600px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+    .field-label {
+      color: #999;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .field {
+      background-color: #1c1c1c;
+      border: none;
+      color: #fff;
+      padding: 8px;
+      width: 100%;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .message {
+      white-space: pre-line;
+      margin-top: 10px;
+      line-height: 1.4;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      background-color: #1c1c1c;
+      color: #fff;
+      border: 1px solid #555;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      padding: 10px;
+      resize: none;
+      margin-top: 10px;
+    }
+    button {
+      margin-top: 10px;
+      background-color: #444;
+      color: #fff;
+      border: 1px solid #666;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-family: 'Courier New', monospace;
+    }
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-box">
+    <div class="field-label">From:</div>
+    <input class="field" type="text" value="Comic Kingdom <no-reply@comickingdom.net>" readonly>
+
+    <div class="field-label">To:</div>
+    <input class="field" type="text" value="comic.kingdom@outlook.com" readonly>
+
+    <div class="field-label">Subject:</div>
+    <input class="field" type="text" value="Re: Comic Kingdom Closure" readonly>
+
+    <div class="message">
+      So you made it this far...  
+      Well guess what! This is as far as it gets! Ha Ha!  
+      Sorry for wasting your time!  
+      If you would like to file a complaint, email us at  
+      <strong>comic.kingdom@outlook.com</strong>  
+      and tell us that we need to stop.
+    </div>
+
+    <textarea id="reply" placeholder="Type your complaint here..."></textarea>
+    <button onclick="checkAnswer()">Send</button>
+  </div>
+
+  <script>
+    function checkAnswer() {
+      const input = document.getElementById("reply").value.trim().toLowerCase();
+      const secret = "that we need to stop";
+      if (input === secret) {
+        window.location.href = "page_3.html"; // Unlock next puzzle
+      } else {
+        alert("Complaint ignored.");
+      }
+    }
+      // Add a new history state when the page loads
+  history.pushState(null, null, location.href);
+
+  window.onpopstate = function () {
+    // This runs if the user presses back/forward
+    history.go(1); // Move forward again
+  };
+  </script>
+</body>
+</html>
