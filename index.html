@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Comic Kingdom</title>
+    <meta name="google-site-verification" content="WMkG2U-xvFAKYzKHd87CMn_YiLt03RDnPr3BADZDx7M" />
+    <style>
+        body {
+            background-color: #222;
+            color: #fff;
+            font-family: 'Times New Roman', serif;
+            display: flex;
+            flex-direction: column; /* stack elements vertically */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        h1 {
+            font-weight: bold;
+            margin-bottom: 10px; /* space between title and phrase */
+        }
+        h2 {
+            font-weight: normal; /* make the main phrase normal */
+        }
+        h2 span {
+            font-weight: bold; /* only bold the unlock letters */
+        }
+    </style>
+</head>
+<body>
+    <h1>Comic Kingdom</h1>
+    <h2>
+        This do<span onclick="clickLetter('m')">m</span>ai<span onclick="clickLetter('n')">n</span> 
+        <span onclick="clickLetter('i')">i</span>s close<span onclick="clickLetter('d')">d</span>
+    </h2>
+
+    <script>
+        const code = ['m','i','n','d'];
+        let progress = 0;
+
+        function clickLetter(letter) {
+            if(letter === code[progress]){
+                progress++;
+                if(progress === code.length){
+                    window.location.href = 'page_2.html';
+                }
+            } else {
+                progress = 0;
+            }
+        }
+          // Add a new history state when the page loads
+        history.pushState(null, null, location.href);
+
+        window.onpopstate = function () {
+    // This runs if the user presses back/forward
+        history.go(1); // Move forward again
+        };
+    </script>
+</body>
+</html>
